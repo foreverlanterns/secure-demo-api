@@ -1,0 +1,14 @@
+$ pytest -q
+...................... [100%]
+
+$ bandit -r app -ll -f txt
+	Total issues (by severity):
+		Undefined: 0
+		Low: 1
+		Medium: 0
+		High: 0
+	Total issues (by confidence):
+
+$ pip-audit -r requirements.txt --strict --progress-spinner off
+No known vulnerabilities found
+

@@ -17,15 +17,18 @@ output on this machine (Windows 11 + Docker Desktop 29.9.1), not drawn by hand.
 | `06-api-xss-escaped.png` | `POST /api/posts` with `<script>` | stored payload returned as `&lt;script&gt;` |
 | `07-api-sqli-blocked.png` | login with `alice' OR '1'='1` | `401`, generic message |
 
-## B. CI/CD — still to do
+## B. CI/CD — captured
 
-| File | What to capture |
+| File | Shows |
 | --- | --- |
-| `02-ci-green.png` | GitHub Actions: the three jobs (`test`, `sast`, `sca`) green |
+| `02-ci-green.png` | the three jobs green (rendered from the Actions API, run 39460231575) |
+| `02b-ci-logs.png` | pytest / bandit / pip-audit output from that run |
+| `02c-sca-caught.png` | the **first** run failing: 18 advisories in Flask 3.1.0 and PyJWT 2.10.1 |
 
-This one cannot be produced locally: it requires the repository to be pushed to
-GitHub so Actions actually runs. Push, open the **Actions** tab, screenshot the
-run, and optionally the **Security → Code scanning** tab for the bandit SARIF.
+The pipeline is public, so the same evidence can be seen live at
+<https://github.com/foreverlanterns/secure-demo-api/actions>. If the instructor
+wants a native screenshot of the Actions page rather than a rendering of its API
+data, open that URL and capture it — the run id is in the file name.
 
 ## C. CVE-2021-41773 — captured
 

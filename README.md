@@ -170,11 +170,25 @@ independent jobs:
 `security-events: write`, so a compromised action cannot rewrite the repository.
 Concurrency cancels superseded runs on the same ref.
 
-> Replace the two placeholders below with real screenshots after the first run
-> (`docs/screenshots/`):
->
-> `![CI run](docs/screenshots/01-ci-green.png)`
-> `![bandit and pip-audit](docs/screenshots/02-sast-sca.png)`
+![CI run](docs/screenshots/02-ci-green.png)
+
+![the three gates](docs/screenshots/02b-ci-logs.png)
+
+### The gate fired on the first push
+
+The initial build failed — not on the tests, on **SCA**. `pip-audit` reported 18
+advisories across the two pinned dependencies:
+
+| Package | Version | Example advisory | Fixed in |
+| --- | --- | --- | --- |
+| `flask` | 3.1.0 | PYSEC-2026-1377, PYSEC-2026-2151 | 3.1.1 / 3.1.3 |
+| `pyjwt` | 2.10.1 | PYSEC-2026-120 … PYSEC-2026-4183 (16 advisories) | 2.12.0 – 2.15.0 |
+
+![the SCA gate rejecting the first build](docs/screenshots/02c-sca-caught.png)
+
+The pins were raised to `Flask==3.1.3`, `PyJWT==2.15.1`, `bcrypt==5.0.0`; the suite
+still passed (22 tests) and the next run went green. This is the pipeline doing the
+one thing a pipeline is for: catching a stale dependency before a reviewer has to.
 
 ---
 

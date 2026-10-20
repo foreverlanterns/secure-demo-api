@@ -8,11 +8,13 @@
 | Variant | — |
 | Student | Surname Name |
 | HDU number | — |
-| Repository | `https://github.com/<user>/secure-demo-api` |
-| Pipeline | `https://github.com/<user>/secure-demo-api/actions` |
+| Repository | <https://github.com/foreverlanterns/secure-demo-api> |
+| Pipeline | <https://github.com/foreverlanterns/secure-demo-api/actions> |
+| Last successful run | 39460231575 — `ef4a7fb`, all three jobs green |
 
-> Fill the four placeholders above before submitting. Everything else in this
-> document reflects the code in the repository.
+> Fill the three placeholders above (variant, student, HDU number) before
+> submitting. Everything else — including the repository and the pipeline run —
+> is real.
 
 ---
 
@@ -130,17 +132,31 @@ frame-ancestors 'none'`, `Referrer-Policy: no-referrer`, `Cache-Control: no-stor
 
 `.github/workflows/ci.yml`, triggered on every push and pull request:
 
-| Job | Tool | Gate |
-| --- | --- | --- |
-| `test` | pytest | 22 tests must pass |
-| `sast` | bandit `-ll` | fails on MEDIUM or higher; SARIF uploaded to code scanning |
-| `sca` | pip-audit `--strict` | fails on any known-vulnerable dependency |
+| Job | Tool | Gate | Result on `ef4a7fb` |
+| --- | --- | --- | --- |
+| `test` | pytest | 22 tests must pass | 22 passed |
+| `sast` | bandit `-ll` | fails on MEDIUM or higher; SARIF to code scanning | no issues at MEDIUM+, one Low below the gate |
+| `sca` | pip-audit `--strict` | fails on any known-vulnerable dependency | no known vulnerabilities |
 
 The workflow defaults to `permissions: contents: read`; only the SAST job is
 granted `security-events: write`, so a compromised third-party action cannot push
 to the repository.
 
-Evidence: `docs/screenshots/01-ci-green.png`, `02-sast-sca.png`.
+**The pipeline caught a real defect on its first run.** The initial build failed —
+not on the tests, but on SCA. `pip-audit` reported 18 advisories across the two
+pinned dependencies:
+
+| Package | Version | Advisories | Fixed in |
+| --- | --- | --- | --- |
+| `flask` | 3.1.0 | PYSEC-2026-1377, PYSEC-2026-2151 | 3.1.1 / 3.1.3 |
+| `pyjwt` | 2.10.1 | PYSEC-2025-183, PYSEC-2026-120/175–179/4140–4149/4152/4183 | 2.12.0 – 2.15.0 |
+
+The pins were raised to `Flask==3.1.3`, `PyJWT==2.15.1`, `bcrypt==5.0.0`; the suite
+still passed and the next run went green (run 39460231575, commit `ef4a7fb`). A
+reviewer would not have noticed a stale pin by reading the diff — the gate did.
+
+Evidence: `docs/screenshots/02-ci-green.png` (three jobs green),
+`02b-ci-logs.png` (the three gates' output), `02c-sca-caught.png` (the rejection).
 
 ## 6. CVE analysis — CVE-2021-41773
 
