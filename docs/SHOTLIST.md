@@ -17,18 +17,22 @@ output on this machine (Windows 11 + Docker Desktop 29.9.1), not drawn by hand.
 | `06-api-xss-escaped.png` | `POST /api/posts` with `<script>` | stored payload returned as `&lt;script&gt;` |
 | `07-api-sqli-blocked.png` | login with `alice' OR '1'='1` | `401`, generic message |
 
-## B. CI/CD — captured
+## B. CI/CD — captured (real screenshots)
 
 | File | Shows |
 | --- | --- |
-| `02-ci-green.png` | the three jobs green (rendered from the Actions API, run 39460231575) |
-| `02b-ci-logs.png` | pytest / bandit / pip-audit output from that run |
-| `02c-sca-caught.png` | the **first** run failing: 18 advisories in Flask 3.1.0 and PyJWT 2.10.1 |
+| `01-ci-history.png` | the run list: run #1 red, then green |
+| `01b-run1-failed.png` | run #1 detail — SCA red, `Process completed with exit code 1` |
+| `01c-run-green.png` | a green run — three jobs, all ticks |
+| `01d-sarif-error-before-fix.png` | the `bandit.sarif` annotation that exposed the broken upload |
+| `02b-ci-logs.png` | the three gates' output from the final run |
 
-The pipeline is public, so the same evidence can be seen live at
-<https://github.com/foreverlanterns/secure-demo-api/actions>. If the instructor
-wants a native screenshot of the Actions page rather than a rendering of its API
-data, open that URL and capture it — the run id is in the file name.
+The pipeline is public: <https://github.com/foreverlanterns/secure-demo-api/actions>.
+The first four are screen captures; `02b` is a rendering of the run log (raw text in
+`docs/screenshots/raw/02b-ci-logs.txt`).
+
+> If you want the *latest* run (no error annotations, SARIF uploaded) rather than
+> `01c` from run #2, open run 39467212818 and capture its summary — same framing.
 
 ## C. CVE-2021-41773 — captured
 

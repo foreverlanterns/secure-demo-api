@@ -170,9 +170,11 @@ independent jobs:
 `security-events: write`, so a compromised action cannot rewrite the repository.
 Concurrency cancels superseded runs on the same ref.
 
-![CI run](docs/screenshots/02-ci-green.png)
+![the runs so far](docs/screenshots/01-ci-history.png)
 
-![the three gates](docs/screenshots/02b-ci-logs.png)
+![run 1: the SCA gate fails the build](docs/screenshots/01b-run1-failed.png)
+
+![a green run](docs/screenshots/01c-run-green.png)
 
 ### The gate fired on the first push
 
@@ -184,11 +186,25 @@ advisories across the two pinned dependencies:
 | `flask` | 3.1.0 | PYSEC-2026-1377, PYSEC-2026-2151 | 3.1.1 / 3.1.3 |
 | `pyjwt` | 2.10.1 | PYSEC-2026-120 … PYSEC-2026-4183 (16 advisories) | 2.12.0 – 2.15.0 |
 
-![the SCA gate rejecting the first build](docs/screenshots/02c-sca-caught.png)
-
 The pins were raised to `Flask==3.1.3`, `PyJWT==2.15.1`, `bcrypt==5.0.0`; the suite
 still passed (22 tests) and the next run went green. This is the pipeline doing the
 one thing a pipeline is for: catching a stale dependency before a reviewer has to.
+
+### …and then it caught a defect in itself
+
+The green runs still carried a red annotation: `SAST (bandit): Path does not
+exist: bandit.sarif`. The upload step had been silently failing since the first
+commit, because `bandit -f sarif` is an **invalid choice** on 1.8.0 — the SARIF
+formatter is an optional extra, not part of the base install.
+
+![the annotation that exposed it](docs/screenshots/01d-sarif-error-before-fix.png)
+
+Fix: `pip install "bandit[sarif]==1.9.4"`, plus a check that fails loudly if the
+report is missing, so the `|| true` can never hide it again. The analysis now lands
+in **Security → Code scanning** (tool `Bandit`, 0 results), and the annotations on
+the latest run are warnings about runner images only.
+
+Gate output for the final run: `docs/screenshots/02b-ci-logs.png`.
 
 ---
 

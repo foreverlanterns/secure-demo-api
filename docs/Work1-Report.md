@@ -10,7 +10,7 @@
 | HDU number | — |
 | Repository | <https://github.com/foreverlanterns/secure-demo-api> |
 | Pipeline | <https://github.com/foreverlanterns/secure-demo-api/actions> |
-| Last successful run | 39460231575 — `ef4a7fb`, all three jobs green |
+| Last successful run | 39467212818 — `bd09fb1`, all three jobs green, SARIF in Code scanning |
 
 > Fill the three placeholders above (variant, student, HDU number) before
 > submitting. Everything else — including the repository and the pipeline run —
@@ -132,11 +132,11 @@ frame-ancestors 'none'`, `Referrer-Policy: no-referrer`, `Cache-Control: no-stor
 
 `.github/workflows/ci.yml`, triggered on every push and pull request:
 
-| Job | Tool | Gate | Result on `ef4a7fb` |
+| Job | Tool | Gate | Result on `bd09fb1` |
 | --- | --- | --- | --- |
-| `test` | pytest | 22 tests must pass | 22 passed |
-| `sast` | bandit `-ll` | fails on MEDIUM or higher; SARIF to code scanning | no issues at MEDIUM+, one Low below the gate |
-| `sca` | pip-audit `--strict` | fails on any known-vulnerable dependency | no known vulnerabilities |
+| `test` | pytest 8.3.4 | 22 tests must pass | 22 passed |
+| `sast` | bandit 1.9.4 `-ll` | fails on MEDIUM or higher; SARIF to code scanning | no issues at MEDIUM+, one Low below the gate |
+| `sca` | pip-audit 2.7.3 `--strict` | fails on any known-vulnerable dependency | no known vulnerabilities |
 
 The workflow defaults to `permissions: contents: read`; only the SAST job is
 granted `security-events: write`, so a compromised third-party action cannot push
@@ -151,12 +151,27 @@ pinned dependencies:
 | `flask` | 3.1.0 | PYSEC-2026-1377, PYSEC-2026-2151 | 3.1.1 / 3.1.3 |
 | `pyjwt` | 2.10.1 | PYSEC-2025-183, PYSEC-2026-120/175–179/4140–4149/4152/4183 | 2.12.0 – 2.15.0 |
 
+![run 1 — the SCA gate fails the build](screenshots/01b-run1-failed.png)
+
 The pins were raised to `Flask==3.1.3`, `PyJWT==2.15.1`, `bcrypt==5.0.0`; the suite
 still passed and the next run went green (run 39460231575, commit `ef4a7fb`). A
 reviewer would not have noticed a stale pin by reading the diff — the gate did.
 
-Evidence: `docs/screenshots/02-ci-green.png` (three jobs green),
-`02b-ci-logs.png` (the three gates' output), `02c-sca-caught.png` (the rejection).
+![a green run — three jobs, all ticks](screenshots/01c-run-green.png)
+
+**The pipeline then caught a defect in itself.** The green runs still carried a red
+annotation: `SAST (bandit): Path does not exist: bandit.sarif`. The upload step had
+been failing silently since the first commit, because `bandit -f sarif` is an
+invalid choice on 1.8.0 — the SARIF formatter ships as an optional extra. Fixed by
+installing `bandit[sarif]==1.9.4` and adding a check that fails loudly when the
+report is missing, so `|| true` can never hide it again. The analysis now lands in
+**Security → Code scanning** (tool `Bandit`, 0 results) and the run's remaining
+annotations are runner-image warnings only.
+
+Evidence: `docs/screenshots/01-ci-history.png` (the run list),
+`01b-run1-failed.png` (SCA rejecting the build), `01c-run-green.png` (three jobs
+green), `01d-sarif-error-before-fix.png` (the annotation above), `02b-ci-logs.png`
+(the three gates' output).
 
 ## 6. CVE analysis — CVE-2021-41773
 
