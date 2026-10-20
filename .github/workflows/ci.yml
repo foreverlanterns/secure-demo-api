@@ -53,19 +53,26 @@ jobs:
           cache-dependency-path: requirements-dev.txt
 
       - name: Install bandit
-        run: pip install bandit==1.8.0
+        run: pip install bandit==1.9.4
 
       - name: Run bandit (fails on MEDIUM and above)
         run: bandit -r app -ll -f txt
 
       - name: Produce SARIF report for the Security tab
         if: always()
-        run: bandit -r app -ll -f sarif -o bandit.sarif || true
+        run: |
+          # `bandit` exits 1 when it finds anything, which would skip the upload;
+          # swallow the exit code but never swallow a missing report.
+          bandit -r app -ll -f sarif -o bandit.sarif || true
+          if [ ! -s bandit.sarif ]; then
+            echo "::error::bandit produced no SARIF report (check that the formatter exists)"
+            exit 1
+          fi
+          echo "SARIF written: $(wc -c < bandit.sarif) bytes"
 
       - name: Upload SARIF
         if: always()
-        uses: github/codeql-action/upload-sarif@v3
-        continue-on-error: true
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: bandit.sarif
           category: bandit
