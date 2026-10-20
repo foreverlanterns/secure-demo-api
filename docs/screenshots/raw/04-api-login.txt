@@ -1,0 +1,5 @@
+# login issues a JWT
+
+$ curl -s -X POST http://127.0.0.1:5000/auth/login -H 'Content-Type: application/json' -d '{"login":"alice","password":"Alice-Strong-Pass-1"}' | cut -c1-104
+{"access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidXNlcm5hbWUiOiJhbGljZSIsInJvbGUiOi
+

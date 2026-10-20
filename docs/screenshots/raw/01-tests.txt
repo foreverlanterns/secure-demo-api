@@ -1,0 +1,5 @@
+# test suite — 22 tests, all green
+
+$ ./gradlew test   # equivalent: python -m pytest
+......................                                                   [100%]
+

@@ -1,0 +1,5 @@
+# stored XSS payload comes back escaped
+
+$ TOKEN=$(curl -s -X POST http://127.0.0.1:5000/auth/login -H 'Content-Type: application/json' -d '{"login":"alice","password":"Alice-Strong-Pass-1"}' | python -c "import sys,json;print(json.load(sys.stdin)['access_token'])"); curl -s -X POST http://127.0.0.1:5000/api/posts -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"title":"<script>alert(1)</script>","content":"xss test"}'
+{"author":"alice","content":"xss test","id":5,"title":"&lt;script&gt;alert(1)&lt;/script&gt;"}
+

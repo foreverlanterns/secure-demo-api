@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+
+# Local data & secrets
+*.db
+*.sqlite3
+.env
+.env.*
+
+# Tooling output
+.pytest_cache/
+.coverage
+htmlcov/
+bandit.sarif
+bandit-report.json
+pip-audit.json
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

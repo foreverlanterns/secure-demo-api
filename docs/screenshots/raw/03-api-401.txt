@@ -1,0 +1,12 @@
+# protected endpoint without a token
+
+$ curl -s -i http://127.0.0.1:5000/api/data | head -8
+HTTP/1.1 401 UNAUTHORIZED
+Server: Werkzeug/3.1.9 Python/3.13.14
+Date: Tue, 20 Oct 2026 16:06:30 GMT
+Content-Type: application/json
+Content-Length: 36
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Referrer-Policy: no-referrer
+

@@ -1,0 +1,7 @@
+# SQL injection payload is treated as a literal string
+
+$ curl -s -X POST http://127.0.0.1:5000/auth/login -H 'Content-Type: application/json' -d '{"login":"alice'"'"' OR '"'"'1'"'"'='"'"'1","password":"x"}' -w '\n[HTTP %{http_code}]\n'
+{"error":"invalid username or password"}
+
+[HTTP 401]
+
