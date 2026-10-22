@@ -204,6 +204,16 @@ report is missing, so the `|| true` can never hide it again. The analysis now la
 in **Security → Code scanning** (tool `Bandit`, 0 results), and the annotations on
 the latest run are warnings about runner images only.
 
+![the fix landing — run #5](docs/screenshots/01f-run-sarif-fix.png)
+
+![the latest run](docs/screenshots/01e-run-latest.png)
+
+**Green, but not silent.** The latest run (`39468208233`, `de0a524`, 21 s) carries
+warnings rather than errors: several pinned actions still target Node 16 and are
+forced onto Node 24, and the `ubuntu-latest` runner image migrates to Ubuntu 26 in
+October. Neither fails the build; both are one-line dependency bumps waiting in the
+annotations panel.
+
 Gate output for the final run: `docs/screenshots/02b-ci-logs.png`.
 
 ---
@@ -359,6 +369,9 @@ work1-secure-api/
 │   ├── test_auth.py       # 9 tests
 │   └── test_api_security.py  # 13 tests
 ├── .github/workflows/ci.yml
+├── cve/
+│   ├── vulnerable/        # Dockerfile + compose — 2.4.49 on :8080
+│   └── fixed/             # same build, base tag 2.4.51, :8081
 ├── docs/CVE-2021-41773-walkthrough.md
 ├── requirements.txt / requirements-dev.txt
 └── pyproject.toml

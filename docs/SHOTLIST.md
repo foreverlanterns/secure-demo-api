@@ -25,14 +25,17 @@ output on this machine (Windows 11 + Docker Desktop 29.9.1), not drawn by hand.
 | `01b-run1-failed.png` | run #1 detail — SCA red, `Process completed with exit code 1` |
 | `01c-run-green.png` | a green run — three jobs, all ticks |
 | `01d-sarif-error-before-fix.png` | the `bandit.sarif` annotation that exposed the broken upload |
+| `01f-run-sarif-fix.png` | run #5 (`39467212818`) — the commit that fixed the SARIF upload, green in 1 m 14 s |
+| `01e-run-latest.png` | run #6 (`39468208233`, `de0a524`) — the latest run, green in 21 s, no error annotations |
 | `02b-ci-logs.png` | the three gates' output from the final run |
 
 The pipeline is public: <https://github.com/foreverlanterns/secure-demo-api/actions>.
-The first four are screen captures; `02b` is a rendering of the run log (raw text in
-`docs/screenshots/raw/02b-ci-logs.txt`).
+All of section B is now real screen captures; `02b` is a rendering of the run log (raw
+text in `docs/screenshots/raw/02b-ci-logs.txt`).
 
-> If you want the *latest* run (no error annotations, SARIF uploaded) rather than
-> `01c` from run #2, open run 39467212818 and capture its summary — same framing.
+> The annotations visible on `01e`/`01f` are deprecation warnings (Node 16 actions,
+> `ubuntu-latest` → Ubuntu 26 in October), not failures. They are documented in the
+> report §5 as "green, but not silent".
 
 ## C. CVE-2021-41773 — captured
 

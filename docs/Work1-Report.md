@@ -168,10 +168,21 @@ report is missing, so `|| true` can never hide it again. The analysis now lands 
 **Security → Code scanning** (tool `Bandit`, 0 results) and the run's remaining
 annotations are runner-image warnings only.
 
+![the commit that fixed the SARIF upload](screenshots/01f-run-sarif-fix.png)
+
+![the latest run](screenshots/01e-run-latest.png)
+
+**Green, but not silent.** The latest run (`39468208233`, `de0a524`, 21 s) carries
+warnings rather than errors: several pinned actions still target Node 16 and are
+forced onto Node 24, and the `ubuntu-latest` runner image migrates to Ubuntu 26 in
+October. Neither fails the build; both are one-line dependency bumps, and the
+annotations panel is exactly where they belong until someone does them.
+
 Evidence: `docs/screenshots/01-ci-history.png` (the run list),
 `01b-run1-failed.png` (SCA rejecting the build), `01c-run-green.png` (three jobs
-green), `01d-sarif-error-before-fix.png` (the annotation above), `02b-ci-logs.png`
-(the three gates' output).
+green), `01d-sarif-error-before-fix.png` (the annotation above),
+`01f-run-sarif-fix.png` (the fix landing), `01e-run-latest.png` (the current state),
+`02b-ci-logs.png` (the three gates' output).
 
 ## 6. CVE analysis — CVE-2021-41773
 
