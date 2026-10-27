@@ -5,16 +5,12 @@
 | | |
 | --- | --- |
 | Laboratory work | #1 — Secure REST API Development with CI/CD and Real CVE Vulnerability Analysis |
-| Variant | — |
-| Student | Surname Name |
-| HDU number | — |
+| Variant | CVE-2021-41773 |
+| Student | Xiao Yangshan |
+| HDU number | 23320208 |
 | Repository | <https://github.com/foreverlanterns/secure-demo-api> |
 | Pipeline | <https://github.com/foreverlanterns/secure-demo-api/actions> |
-| Last successful run | 39467212818 — `bd09fb1`, all three jobs green, SARIF in Code scanning |
-
-> Fill the three placeholders above (variant, student, HDU number) before
-> submitting. Everything else — including the repository and the pipeline run —
-> is real.
+| Last successful run | 39715081913 — `8787fd2`, all three jobs green, SARIF in Code scanning |
 
 ---
 
